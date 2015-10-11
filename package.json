@@ -1,0 +1,29 @@
+{
+  "name": "asloc",
+  "version": "0.0.1",
+  "description": "Simple CLI tool for counting Single Lines of Code (SLOC)",
+  "main": "asloc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/MichielvdVelde/asloc.git"
+  },
+  "keywords": [
+    "sloc",
+    "lines",
+    "code",
+    "cli"
+  ],
+  "author": "Michiel van der Velde <michiel@michielvdvelde.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MichielvdVelde/asloc/issues"
+  },
+  "homepage": "https://github.com/MichielvdVelde/asloc#readme",
+  "dependencies": {
+    "commander": "^2.8.1",
+    "recursive-readdir": "^1.2.1"
+  }
+}
