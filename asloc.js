@@ -38,6 +38,7 @@ var processFiles = function(err, files) {
     return console.error(err);
   }
   for(var i = 0; i < files.length; i++) {
+    if(program.filter && program.filter.indexOf(path.extname(files[i]).substr(1)) == -1) continue;
     var source = fs.readFileSync(files[i], 'utf8');
     fileSLOC[files[i]] = countSourceSLOC(source, program.ignorecomments || false);
     totalSLOC += fileSLOC[files[i]];
@@ -116,8 +117,7 @@ program
     .option('-d, --dir <dir>', 'Directory to walk (default is current directory)', resolveAndNormalizePath, __dirname)
     .option('-i, --ignorecomments', 'Ignore comments in SLOC count')
     .option('-r, --recurive', 'Enable recursive directory walking')
-    // TODO: Implement filter
-    //.option('-f, --filter [filters]', 'Filter by file or type', splitFilterList)
+    .option('-f, --filter [filters]', 'Filter by file type (e.g. \'js,css\')', splitFilterList)
     .parse(process.argv);
 
 // First make sure we selected a valid directory
