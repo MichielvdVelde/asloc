@@ -10,6 +10,7 @@ asloc is a very simple CLI tool for counting Single Lines Of Code (SLOC). The ai
 asloc currently has the following features:
 
 * Count the SLOC in all files in the given directory
+* Ignores empty lines by default
 * Ignore comments (both singe-line and multi-line) when processing SLOC count
 
 ### Missing
@@ -18,6 +19,7 @@ The following features will be added in a future version:
 
 * Recursive walk all subdirectories and process those files as well
 * Filter which files to count based on its extension (e.g. only .js files)
+* Provide a prettier output
 
 ## Install
 
@@ -38,8 +40,21 @@ $ asloc
 * -d, --dir: directory to walk (defaults to the current directory)
 * -i, --ignorecomments: Ignore comments when calculating SLOC count
 
+### Example output
+
 ```
-$ asloc -d myDir -i
+SLOC count per file:
+
+ Files: myfirstfile.js
+ SLOC: 23
+
+ File: mysecondfile.js
+ SLOC: 68
+
+ File: mythirdfile.css
+ SLOC: 18
+
+Total SLOC count: 109
 ```
 
 ## Changelog
