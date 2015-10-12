@@ -9,7 +9,7 @@ asloc is a very simple CLI tool for counting Single Lines Of Code (SLOC). The ai
 
 asloc currently has the following features:
 
-* Filter by fil extension type
+* Filter by file extension type
 * Display total SLOC count or per-file count
 * Now supports recursive walking, so files in subdirectories can be listed as well
 * Count the SLOC in all files in the given directory
