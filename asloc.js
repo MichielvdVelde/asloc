@@ -10,130 +10,182 @@ var program = require('commander');
 var path = require('path');
 var fs = require('fs');
 
-// Split the filter list
-var splitFilterList = function(val) {
-  return val.split(/[ ,]+/).filter(Boolean);
-};
+/**
+ * Various helper methods
+*/
+var helpers = {
 
-var resolveAndNormalizePath = function(to) {
-  return path.resolve(__dirname, to);
-};
+  /**
+   * Resolve and normalize the dir path gotten from the arguments
+  **/
+  'resolveAndNormalizePath': function(to) {
+    return path.resolve(__dirname, to);
+  },
 
-var dirExists = function(dir) {
-  try {
-    fs.accessSync(dir);
+  /**
+   * Split the filter into an array of its elements
+   * NOTE: Find a better way
+  */
+  'splitFilterList': function(val) {
+    return val.split(/[ ,]+/).filter(Boolean);
+  },
+
+  /**
+   * Check to see if a directory exists
+  */
+  'dirExists': function(dir) {
+    try {
+      fs.accessSync(dir);
+    }
+    catch(error) {
+      return false;
+    }
+    return fs.statSync(dir).isDirectory();
   }
-  catch(error) {
-    return false;
-  }
-  return fs.statSync(dir).isDirectory();
+
 };
 
+/**
+ * Methods to walk through the directory structure
+**/
+var walk = {
+
+  /**
+   * Do a recursive walk
+  **/
+  'recurive': function(dir, callback) {
+    var list = [];
+    var files = fs.readdirSync(dir);
+    files.forEach(function(file) {
+      file = path.join(dir, file);
+      if(fs.statSync(file).isDirectory()) {
+        walk.recurive(file, function(err, newFiles) {
+          list = list.concat(newFiles);
+        });
+      }
+      else {
+        list.push(file);
+      }
+    });
+    return callback(null, list);
+  },
+
+  /**
+   * Do a non-recursive walk
+  **/
+  'notrecursive': function(dir, callback) {
+    fs.readdir(dir, function(err, files) {
+      if(err) return callback(err);
+      var newFiles = [];
+      for(var i in files) {
+        files[i] = path.resolve(dir, files[i]);
+        var stat = fs.statSync(files[i]);
+        if(stat.isDirectory()) continue;
+        newFiles.push(files[i]);
+      }
+      return callback(null, newFiles);
+    });
+  }
+};
+
+/**
+ * Count the SLOC and comments in a file source
+**/
+var countSourceSLOC = function(source, ignoreComments) {
+  source = source.split("\n");
+
+  var sourceInfo = {
+    'sloc': 0,
+    'comm': 0
+  };
+
+  var multilineCommentOpen = false;
+  for(var l = 0; l < source.length; l++) {
+    var curLine = source[l].trim();
+    if(curLine.length === 0) continue;
+    if(curLine.substr(0, 2) == '//') {
+      sourceInfo.comm++;
+      continue;
+    }
+    if(curLine.substr(0, 2) == '/*' && !multilineCommentOpen) {
+      multilineCommentOpen = true;
+      sourceInfo.comm++;
+      continue;
+    }
+    if(curLine.substr(-2) == '*/' && multilineCommentOpen) {
+      multilineCommentOpen = false;
+      sourceInfo.comm++;
+      continue;
+    }
+    sourceInfo.sloc++;
+  }
+  return sourceInfo;
+};
+
+/**
+ * Process all walked and retrieved files
+**/
 var processFiles = function(err, files) {
-  var fileSLOC = {};
-  var totalSLOC = 0;
-  if(err) {
-
-    if(err.message.indexOf('ENOENT') != -1) return console.error('Error: specified directory doesn\'t exist!');
-    return console.error(err);
-  }
+  var fileInfo = {};
+  var totalInfo = {
+    'sloc': 0,
+    'comm': 0
+  };
+  if(err) return console.error(err);
   for(var i = 0; i < files.length; i++) {
     if(program.filter && program.filter.indexOf(path.extname(files[i]).substr(1)) == -1) continue;
     var source = fs.readFileSync(files[i], 'utf8');
-    fileSLOC[files[i]] = countSourceSLOC(source, program.ignorecomments || false);
-    totalSLOC += fileSLOC[files[i]];
+    var sourceSLOC = countSourceSLOC(source, program.ignorecomments || false);
+    fileInfo[files[i]] = sourceSLOC;
+    totalInfo.sloc += sourceSLOC.sloc;
+    totalInfo.comm += sourceSLOC.comm;
   }
-  // Now we can display it!
-  displayResults(totalSLOC, fileSLOC);
+  displayResults(totalInfo, fileInfo);
 };
 
-var walkRecursive = function(dir, callback) {
-  var list = [];
-  var files = fs.readdirSync(dir);
-  files.forEach(function(file) {
-    file = path.join(dir, file);
-    if(fs.statSync(file).isDirectory()) {
-      walkRecursive(file, function(err, newFiles) {
-        list = list.concat(newFiles);
-      });
-    }
-    else {
-      list.push(file);
-    }
-  });
-  return callback(null, list);
-};
-
-var walkNotRecursive = function(dir, callback) {
-  fs.readdir(dir, function(err, files) {
-    if(err) return callback(err);
-    var newFiles = [];
-    for(var i in files) {
-      files[i] = path.resolve(dir, files[i]);
-      var stat = fs.statSync(files[i]);
-      if(stat.isDirectory()) continue;
-      newFiles.push(files[i]);
-    }
-    return callback(null, newFiles);
-  });
-};
-
-
-var countSourceSLOC = function(source, ignoreComments) {
-  source = source.split("\n");
-  var sloc = 0;
-  var commentLines = 0;
-  for(var n = 0; n < source.length; n++) {
-    var multilineCommentOpen = false;
-    source[n] = source[n].trim();
-    // Don't count enpty lines
-    if(source[n].length === 0) continue;
-    // Remove single-line comments
-    if(source[n].substr(0, 2) == '//') {
-      commentLines++;
-      if(ignoreComments) continue;
-    }
-    // Remove multi-line comments
-    if(source[n].substr(0, 2) == '/*' && !multilineCommentOpen) multilineCommentOpen = true;
-    if(source[n].substr(-2) == '*/' && multilineCommentOpen) multilineCommentOpen = false;
-    if(multilineCommentOpen) {
-      commentLines++;
-      if(ignoreComments) continue;
-    }
-    // Finally count the line
-    sloc++;
-  }
-  return sloc;
-};
-
-var displayResults = function(totalSLOCs, fileSLOCs) {
+/**
+ * Display the results
+*/
+var displayResults = function(totalInfo, fileInfo) {
   if(program.verbose) {
     console.log('SLOC count per file:');
-    for(var key in fileSLOCs) {
+    for(var file in fileInfo) {
       console.log();
-      console.log(' File: %s', path.relative(__dirname, key));
-      console.log(' SLOC: %d', fileSLOCs[key].toLocaleString());
+      console.log(' File: %s', path.relative(__dirname, file));
+      if(!program.ignoreComments) {
+        console.log('  SLOC: %d', fileInfo[file].sloc.toLocaleString());
+        console.log('  Comments: %d', fileInfo[file].comm.toLocaleString());
+      }
+      else {
+        console.log('  SLOC: %d', (fileInfo[file].sloc + fileInfo[file].comm).toLocaleString());
+      }
     }
   }
   console.log();
-  console.log('Total SLOC count: %s', totalSLOCs.toLocaleString());
+  console.log('Total SLOC count: %s', totalInfo.sloc.toLocaleString());
+  if(!program.ignoreComments) console.log('Total comment line count: %s', totalInfo.comm.toLocaleString());
 };
 
 
 program
     .version(pkg.version)
     .description('Simple Single Lines Of Code (SLOC) counter tool')
-    .option('-d, --dir <dir>', 'directory to walk (default is current directory)', resolveAndNormalizePath, __dirname)
+    .option('-d, --dir <dir>', 'directory to walk (default is current directory)', helpers.resolveAndNormalizePath, __dirname)
     .option('-i, --ignorecomments', 'ignore comments in SLOC count')
     .option('-r, --recurive', 'enable recursive directory walking')
-    .option('-f, --filter [filters]', 'filter by file type (e.g. \'js,css\')', splitFilterList)
+    .option('-f, --filter [filters]', 'filter by file type (e.g. \'js,css\')', helpers.splitFilterList)
     .option('-v, --verbose', 'show verbose output')
     .parse(process.argv);
 
-// First make sure we selected a valid directory
-if(!dirExists(program.dir)) {
+/**
+ * First make sure we selected a valid directory
+*/
+if(!helpers.dirExists(program.dir)) {
   return console.error('Error: Specified directory is not a directory or doesn\'t exist!');
 }
 
-if(!program.recurive) walkNotRecursive(program.dir, processFiles);
-else walkRecursive(program.dir, processFiles);
+/**
+ * Finally select the appropriate action based on the -r option
+**/
+if(!program.recurive) walk.notrecursive(program.dir, processFiles);
+else walk.recursive(program.dir, processFiles);

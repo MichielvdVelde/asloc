@@ -11,6 +11,7 @@ asloc currently has the following features:
 
 * Filter by file extension type
 * Display total SLOC count or per-file count
+* Also displays the amount of comment lines
 * Now supports recursive walking, so files in subdirectories can be listed as well
 * Count the SLOC in all files in the given directory
 * Ignores empty lines by default
@@ -21,7 +22,6 @@ asloc currently has the following features:
 The following features will be added in a future version:
 
 * Provide a prettier output
-* Display amount of comment lines
 * Future talk: optionally parse .gitignore files to exclude files/dirs listed
 
 ## Install
@@ -55,25 +55,29 @@ $ asloc -v
 SLOC count per file:
 
  Files: myfirstfile.js
- SLOC: 23
+  SLOC: 23
+  Comment lines: 6
 
  File: mysecondfile.js
- SLOC: 68
+  SLOC: 68
+  Comment lines: 0
 
  File: mythirdfile.css
- SLOC: 18
+  SLOC: 18
+  Comment lines: 1
 
 Total SLOC count: 109
+Total comment line count: 7
 ```
 
 ## Changelog
 
-* Version 0.0.3 - 12 Oct. 2015
+* V0.0.1 - v0.0.4 - 12 Oct. 2015
+  * Display amount of comment lines
+  * Significant code cleanup
   * Added `verbose` option
   * Added `filter` option
-* Version 0.0.2 - 12 Oct. 2015
   * Now supports recursive directory walking
-* Version 0.0.1 - 12 Oct. 2015
   * Initial publish
 
 ## License
