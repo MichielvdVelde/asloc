@@ -114,10 +114,10 @@ var displayResults = function(totalSLOCs, fileSLOCs) {
 program
     .version(pkg.version)
     .description('Simple Single Lines Of Code (SLOC) counter tool')
-    .option('-d, --dir <dir>', 'Directory to walk (default is current directory)', resolveAndNormalizePath, __dirname)
-    .option('-i, --ignorecomments', 'Ignore comments in SLOC count')
-    .option('-r, --recurive', 'Enable recursive directory walking')
-    .option('-f, --filter [filters]', 'Filter by file type (e.g. \'js,css\')', splitFilterList)
+    .option('-d, --dir <dir>', 'directory to walk (default is current directory)', resolveAndNormalizePath, __dirname)
+    .option('-i, --ignorecomments', 'ignore comments in SLOC count')
+    .option('-r, --recurive', 'enable recursive directory walking')
+    .option('-f, --filter [filters]', 'filter by file type (e.g. \'js,css\')', splitFilterList)
     .parse(process.argv);
 
 // First make sure we selected a valid directory
