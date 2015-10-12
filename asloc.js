@@ -26,7 +26,7 @@ var dirExists = function(dir) {
   catch(error) {
     return false;
   }
-  fs.statSync(dir).isDirectory();
+  return fs.statSync(dir).isDirectory();
 };
 
 var processFiles = function(err, files) {
