@@ -100,11 +100,13 @@ var countSourceSLOC = function(source, ignoreComments) {
 };
 
 var displayResults = function(totalSLOCs, fileSLOCs) {
-  console.log('SLOC count per file:');
-  for(var key in fileSLOCs) {
-    console.log();
-    console.log(' File: %s', path.relative(__dirname, key));
-    console.log(' SLOC: %d', fileSLOCs[key].toLocaleString());
+  if(program.verbose) {
+    console.log('SLOC count per file:');
+    for(var key in fileSLOCs) {
+      console.log();
+      console.log(' File: %s', path.relative(__dirname, key));
+      console.log(' SLOC: %d', fileSLOCs[key].toLocaleString());
+    }
   }
   console.log();
   console.log('Total SLOC count: %s', totalSLOCs.toLocaleString());
@@ -118,6 +120,7 @@ program
     .option('-i, --ignorecomments', 'ignore comments in SLOC count')
     .option('-r, --recurive', 'enable recursive directory walking')
     .option('-f, --filter [filters]', 'filter by file type (e.g. \'js,css\')', splitFilterList)
+    .option('-v, --verbose', 'show verbose output')
     .parse(process.argv);
 
 // First make sure we selected a valid directory
