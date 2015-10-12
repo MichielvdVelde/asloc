@@ -22,6 +22,7 @@ The following features will be added in a future version:
 
 * Provide a prettier output
 * Display amount of comment lines
+* Future talk: optionally parse .gitignore files to exclude files/dirs listed
 
 ## Install
 
