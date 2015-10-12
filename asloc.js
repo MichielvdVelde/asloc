@@ -96,13 +96,17 @@ var countSourceSLOC = function(source, ignoreComments) {
 
   var sourceInfo = {
     'sloc': 0,
-    'comm': 0
+    'comm': 0,
+    'empty': 0
   };
 
   var multilineCommentOpen = false;
   for(var l = 0; l < source.length; l++) {
     var curLine = source[l].trim();
-    if(curLine.length === 0) continue;
+    if(curLine.length === 0) {
+      sourceInfo.empty++;
+      continue;
+    }
     if(curLine.substr(0, 2) == '//') {
       sourceInfo.comm++;
       continue;
