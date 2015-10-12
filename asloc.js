@@ -29,6 +29,22 @@ var dirExists = function(dir) {
   fs.statSync(dir).isDirectory();
 };
 
+var processFiles = function(err, files) {
+  if(err) {
+
+    if(err.message.indexOf('ENOENT') != -1) return console.error('Error: specified directory doesn\'t exist!');
+    return console.error(err);
+  }
+  var totalSLOC = 0;
+  for(var i = 0; i < files.length; i++) {
+    var source = fs.readFileSync(files[i], 'utf8');
+    fileSLOC[files[i]] = countSourceSLOC(source, program.ignorecomments || false);
+    totalSLOC += fileSLOC[files[i]];
+  }
+  // Now we can display it!
+  displayResults(totalSLOC, fileSLOC);
+};
+
 var walkRecursive = function(dir, callback) {
   // TODO
 };
@@ -99,18 +115,4 @@ if(!dirExists(program.dir)) {
 var fileSLOC = {};
 var totalSLOC = 0;
 
-walkNotRecursive(program.dir, function(err, files) {
-  if(err) {
-
-    if(err.message.indexOf('ENOENT') != -1) return console.error('Error: specified directory doesn\'t exist!');
-    return console.error(err);
-  }
-  var totalSLOC = 0;
-  for(var i = 0; i < files.length; i++) {
-    var source = fs.readFileSync(files[i], 'utf8');
-    fileSLOC[files[i]] = countSourceSLOC(source, program.ignorecomments || false);
-    totalSLOC += fileSLOC[files[i]];
-  }
-  // Now we can display it!
-  displayResults(totalSLOC, fileSLOC);
-});
+if(!program.recurive) walkNotRecursive(program.dir, processFiles);
