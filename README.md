@@ -39,7 +39,8 @@ $ asloc
 
 * -d, --dir: directory to walk (defaults to the current directory)
 * -i, --ignorecomments: ignore comments when calculating SLOC count
-* -r, --recursive: do a recursive directory walk and list fiels in subdirs as well
+* -r, --recursive: do a recursive directory walk and list files in subdirs as well
+* -h, --help: display help
 
 ### Example output
 
