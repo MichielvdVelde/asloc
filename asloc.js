@@ -104,10 +104,10 @@ var displayResults = function(totalSLOCs, fileSLOCs) {
   for(var key in fileSLOCs) {
     console.log();
     console.log(' File: %s', path.relative(__dirname, key));
-    console.log(' SLOC: %d', fileSLOCs[key]);
+    console.log(' SLOC: %d', fileSLOCs[key].toLocaleString());
   }
   console.log();
-  console.log('Total SLOC count: %d', totalSLOCs);
+  console.log('Total SLOC count: %s', totalSLOCs.toLocaleString());
 };
 
 
