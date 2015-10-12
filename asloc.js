@@ -169,7 +169,7 @@ var displayResults = function(totalInfo, fileInfo) {
       console.log(' File: %s', path.relative(__dirname, file));
       if(!program.ignoreComments) {
         console.log('  SLOC: %d', fileInfo[file].sloc.toLocaleString());
-        console.log('  Comments: %d', fileInfo[file].comm.total.toLocaleString());
+        console.log('  Comments: %s\n   Single line: %s\n   Multiline: %s', fileInfo[file].comm.total.toLocaleString(), fileInfo[file].comm.single.toLocaleString(), fileInfo[file].comm.multi.toLocaleString());
       }
       else {
         console.log('  SLOC: %d', (fileInfo[file].sloc + fileInfo[file].comm).toLocaleString());
@@ -178,7 +178,7 @@ var displayResults = function(totalInfo, fileInfo) {
   }
   console.log();
   console.log('Total SLOC count: %s', totalInfo.sloc.toLocaleString());
-  if(!program.ignoreComments) console.log('Total comment line count: %s', totalInfo.comm.total.toLocaleString());
+  if(!program.ignoreComments) console.log('Total comment line count: %s\n Single line: %s\n Multi line: %s', totalInfo.comm.total.toLocaleString(), totalInfo.comm.single.toLocaleString(), totalInfo.comm.multi.toLocaleString());
 };
 
 
