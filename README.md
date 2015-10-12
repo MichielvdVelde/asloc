@@ -18,8 +18,8 @@ asloc currently has the following features:
 
 The following features will be added in a future version:
 
-* Filter which files to count based on its extension (e.g. only .js files)
 * Provide a prettier output
+* Display amount of comment lines
 
 ## Install
 
@@ -40,9 +40,15 @@ $ asloc
 * -d, --dir: directory to walk (defaults to the current directory)
 * -i, --ignorecomments: ignore comments when calculating SLOC count
 * -r, --recursive: do a recursive directory walk and list files in subdirs as well
+* -f, --filter: comma-delimited list of file types to count (e.g. js,css)
+* -v, --verbose: enable verbose, per-file SLOC count display
 * -h, --help: display help
 
 ### Example output
+
+```
+$ asloc -v
+```
 
 ```
 SLOC count per file:
@@ -61,6 +67,9 @@ Total SLOC count: 109
 
 ## Changelog
 
+* Version 0.0.3 - 12 Oct. 2015
+  * Added `verbose` option
+  * Added `filter` option
 * Version 0.0.2 - 12 Oct. 2015
   * Now supports recursive directory walking
 * Version 0.0.1 - 12 Oct. 2015
