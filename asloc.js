@@ -19,6 +19,16 @@ var resolveAndNormalizePath = function(to) {
   return path.resolve(__dirname, to);
 };
 
+var dirExists = function(dir) {
+  try {
+    fs.accessSync(dir);
+  }
+  catch(error) {
+    return false;
+  }
+  fs.statSync(dir).isDirectory();
+};
+
 var walkRecursive = function(dir, callback) {
   // TODO
 };
@@ -81,11 +91,20 @@ program
     //.option('-f, --filter [filters]', 'Filter by file or type', splitFilterList)
     .parse(process.argv);
 
+// First make sure we selected a valid directory
+if(!dirExists(program.dir)) {
+  return console.error('Error: Specified directory is not a directory or doesn\'t exist!');
+}
+
 var fileSLOC = {};
 var totalSLOC = 0;
 
 walkNotRecursive(program.dir, function(err, files) {
-  if(err) return console.error(err);
+  if(err) {
+
+    if(err.message.indexOf('ENOENT') != -1) return console.error('Error: specified directory doesn\'t exist!');
+    return console.error(err);
+  }
   var totalSLOC = 0;
   for(var i = 0; i < files.length; i++) {
     var source = fs.readFileSync(files[i], 'utf8');
