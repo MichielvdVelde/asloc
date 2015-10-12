@@ -30,12 +30,13 @@ var dirExists = function(dir) {
 };
 
 var processFiles = function(err, files) {
+  var fileSLOC = {};
+  var totalSLOC = 0;
   if(err) {
 
     if(err.message.indexOf('ENOENT') != -1) return console.error('Error: specified directory doesn\'t exist!');
     return console.error(err);
   }
-  var totalSLOC = 0;
   for(var i = 0; i < files.length; i++) {
     var source = fs.readFileSync(files[i], 'utf8');
     fileSLOC[files[i]] = countSourceSLOC(source, program.ignorecomments || false);
@@ -46,7 +47,20 @@ var processFiles = function(err, files) {
 };
 
 var walkRecursive = function(dir, callback) {
-  // TODO
+  var list = [];
+  var files = fs.readdirSync(dir);
+  files.forEach(function(file) {
+    file = path.join(dir, file);
+    if(fs.statSync(file).isDirectory()) {
+      walkRecursive(file, function(err, newFiles) {
+        list = list.concat(newFiles);
+      });
+    }
+    else {
+      list.push(file);
+    }
+  });
+  return callback(null, list);
 };
 
 var walkNotRecursive = function(dir, callback) {
@@ -101,8 +115,7 @@ program
     .description('Simple Single Lines Of Code (SLOC) counter tool')
     .option('-d, --dir <dir>', 'Directory to walk (default is current directory)', resolveAndNormalizePath, __dirname)
     .option('-i, --ignorecomments', 'Ignore comments in SLOC count')
-    // TODO: Implement recursive directory walking
-    //.option('-r, --recurive', 'Enable recursive directory walking')
+    .option('-r, --recurive', 'Enable recursive directory walking')
     // TODO: Implement filter
     //.option('-f, --filter [filters]', 'Filter by file or type', splitFilterList)
     .parse(process.argv);
@@ -112,7 +125,6 @@ if(!dirExists(program.dir)) {
   return console.error('Error: Specified directory is not a directory or doesn\'t exist!');
 }
 
-var fileSLOC = {};
-var totalSLOC = 0;
 
 if(!program.recurive) walkNotRecursive(program.dir, processFiles);
+else walkRecursive(program.dir, processFiles);
