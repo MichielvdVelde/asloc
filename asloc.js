@@ -96,7 +96,11 @@ var countSourceSLOC = function(source, ignoreComments) {
 
   var sourceInfo = {
     'sloc': 0,
-    'comm': 0,
+    'comm': {
+      'single': 0,
+      'multi': 0,
+      'total': 0
+    },
     'empty': 0
   };
 
@@ -108,17 +112,18 @@ var countSourceSLOC = function(source, ignoreComments) {
       continue;
     }
     if(curLine.substr(0, 2) == '//') {
-      sourceInfo.comm++;
+      sourceInfo.comm.single++;
+      sourceInfo.comm.total++;
       continue;
     }
     if(curLine.substr(0, 2) == '/*' && !multilineCommentOpen) {
       multilineCommentOpen = true;
-      sourceInfo.comm++;
+      sourceInfo.comm.multi++;
+      sourceInfo.comm.total++;
       continue;
     }
     if(curLine.substr(-2) == '*/' && multilineCommentOpen) {
       multilineCommentOpen = false;
-      sourceInfo.comm++;
       continue;
     }
     sourceInfo.sloc++;
@@ -133,7 +138,11 @@ var processFiles = function(err, files) {
   var fileInfo = {};
   var totalInfo = {
     'sloc': 0,
-    'comm': 0
+    'comm': {
+      'single': 0,
+      'multi': 0,
+      'total': 0
+    }
   };
   if(err) return console.error(err);
   for(var i = 0; i < files.length; i++) {
@@ -142,7 +151,9 @@ var processFiles = function(err, files) {
     var sourceSLOC = countSourceSLOC(source, program.ignorecomments || false);
     fileInfo[files[i]] = sourceSLOC;
     totalInfo.sloc += sourceSLOC.sloc;
-    totalInfo.comm += sourceSLOC.comm;
+    totalInfo.comm.single += sourceSLOC.comm.single;
+    totalInfo.comm.multi += sourceSLOC.comm.multi;
+    totalInfo.comm.total += sourceSLOC.comm.total;
   }
   displayResults(totalInfo, fileInfo);
 };
@@ -158,7 +169,7 @@ var displayResults = function(totalInfo, fileInfo) {
       console.log(' File: %s', path.relative(__dirname, file));
       if(!program.ignoreComments) {
         console.log('  SLOC: %d', fileInfo[file].sloc.toLocaleString());
-        console.log('  Comments: %d', fileInfo[file].comm.toLocaleString());
+        console.log('  Comments: %d', fileInfo[file].comm.total.toLocaleString());
       }
       else {
         console.log('  SLOC: %d', (fileInfo[file].sloc + fileInfo[file].comm).toLocaleString());
@@ -167,7 +178,7 @@ var displayResults = function(totalInfo, fileInfo) {
   }
   console.log();
   console.log('Total SLOC count: %s', totalInfo.sloc.toLocaleString());
-  if(!program.ignoreComments) console.log('Total comment line count: %s', totalInfo.comm.toLocaleString());
+  if(!program.ignoreComments) console.log('Total comment line count: %s', totalInfo.comm.total.toLocaleString());
 };
 
 
