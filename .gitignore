@@ -2,6 +2,9 @@
 logs
 *.log
 
+# Added for testing (REMOVE LATER)
+testing
+
 # Runtime data
 pids
 *.pid
