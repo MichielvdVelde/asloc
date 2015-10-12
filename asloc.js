@@ -82,17 +82,24 @@ var walkNotRecursive = function(dir, callback) {
 var countSourceSLOC = function(source, ignoreComments) {
   source = source.split("\n");
   var sloc = 0;
+  var commentLines = 0;
   for(var n = 0; n < source.length; n++) {
     var multilineCommentOpen = false;
     source[n] = source[n].trim();
     // Don't count enpty lines
     if(source[n].length === 0) continue;
     // Remove single-line comments
-    if(ignoreComments && source[n].substr(0, 2) == '//') continue;
+    if(source[n].substr(0, 2) == '//') {
+      commentLines++;
+      if(ignoreComments) continue;
+    }
     // Remove multi-line comments
-    if(ignoreComments && source[n].substr(0, 2) == '/*' && !multilineCommentOpen) multilineCommentOpen = true;
-    if(ignoreComments && source[n].substr(-2) == '*/' && multilineCommentOpen) multilineCommentOpen = false;
-    if(multilineCommentOpen) continue;
+    if(source[n].substr(0, 2) == '/*' && !multilineCommentOpen) multilineCommentOpen = true;
+    if(source[n].substr(-2) == '*/' && multilineCommentOpen) multilineCommentOpen = false;
+    if(multilineCommentOpen) {
+      commentLines++;
+      if(ignoreComments) continue;
+    }
     // Finally count the line
     sloc++;
   }
