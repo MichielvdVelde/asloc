@@ -12,7 +12,7 @@ var fs = require('fs');
 
 // Split the filter list
 var splitFilterList = function(val) {
-  return val.split(/\s*,\s*/);
+  return val.split(/[ ,]+/).filter(Boolean);
 };
 
 var resolveAndNormalizePath = function(to) {
@@ -124,7 +124,6 @@ program
 if(!dirExists(program.dir)) {
   return console.error('Error: Specified directory is not a directory or doesn\'t exist!');
 }
-
 
 if(!program.recurive) walkNotRecursive(program.dir, processFiles);
 else walkRecursive(program.dir, processFiles);
