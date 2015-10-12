@@ -31,8 +31,6 @@ npm install -g asloc
 
 ## Usage
 
-Simply use the tool in your command prompt:
-
 ```
 $ asloc
 ```
@@ -42,11 +40,11 @@ $ asloc
 * -d, --dir: directory to walk (defaults to the current directory)
 * -i, --ignorecomments: ignore comments when calculating SLOC count
 * -r, --recursive: do a recursive directory walk and list files in subdirs as well
-* -f, --filter: comma-delimited list of file types to count (e.g. js,css)
+* -f, --filter: comma-delimited list of file types to count (e.g. `js,css`)
 * -v, --verbose: enable verbose, per-file SLOC count display
 * -h, --help: display help
 
-### Example output
+### Example usage
 
 ```
 $ asloc -v
