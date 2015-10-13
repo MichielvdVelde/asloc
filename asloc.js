@@ -9,6 +9,7 @@ var program = require('commander');
 
 var path = require('path');
 var fs = require('fs');
+var cwd = process.cwd();
 
 /**
  * Various helper methods
@@ -19,7 +20,7 @@ var helpers = {
    * Resolve and normalize the dir path gotten from the arguments
   **/
   'resolveAndNormalizePath': function(to) {
-    return path.resolve(__dirname, to);
+    return path.resolve(cwd, to);
   },
 
   /**
@@ -166,7 +167,7 @@ var displayResults = function(totalInfo, fileInfo) {
     console.log('SLOC count per file:');
     for(var file in fileInfo) {
       console.log();
-      console.log(' File: %s', path.relative(__dirname, file));
+      console.log(' File: %s', path.relative(cwd, file));
       if(!program.ignoreComments) {
         console.log('  SLOC: %d', fileInfo[file].sloc.toLocaleString());
         console.log('  Comments: %s\n   Single line: %s\n   Multiline: %s', fileInfo[file].comm.total.toLocaleString(), fileInfo[file].comm.single.toLocaleString(), fileInfo[file].comm.multi.toLocaleString());
@@ -185,7 +186,7 @@ var displayResults = function(totalInfo, fileInfo) {
 program
     .version(pkg.version)
     .description('Simple Single Lines Of Code (SLOC) counter tool')
-    .option('-d, --dir <dir>', 'directory to walk (default is current directory)', helpers.resolveAndNormalizePath, __dirname)
+    .option('-d, --dir <dir>', 'directory to walk (default is current directory)', helpers.resolveAndNormalizePath, cwd)
     .option('-i, --ignorecomments', 'ignore comments in SLOC count')
     .option('-r, --recursive', 'enable recursive directory walking')
     .option('-f, --filter [filters]', 'filter by file type (e.g. \'js,css\')', helpers.splitFilterList)
