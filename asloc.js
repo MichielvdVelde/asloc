@@ -59,7 +59,7 @@ var walk = {
     files.forEach(function(file) {
       file = path.join(dir, file);
       if(fs.statSync(file).isDirectory()) {
-        walk.recurive(file, function(err, newFiles) {
+        walk.recursive(file, function(err, newFiles) {
           list = list.concat(newFiles);
         });
       }
