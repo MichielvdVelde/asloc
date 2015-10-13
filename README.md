@@ -71,7 +71,7 @@ Total comment line count: 7
 
 ## Changelog
 
-* 0.0.5 0.0.7 - 13 Oct 2015
+* 0.0.5 0.0.8 - 13 Oct 2015
   * Fixed a few typos - oops (today is not my day)
   * Added `asloc.js` to the `bin` field in `package.json` (should now be executable)
 * V0.0.1 - v0.0.4 - 12 Oct. 2015

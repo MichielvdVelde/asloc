@@ -187,7 +187,7 @@ program
     .description('Simple Single Lines Of Code (SLOC) counter tool')
     .option('-d, --dir <dir>', 'directory to walk (default is current directory)', helpers.resolveAndNormalizePath, __dirname)
     .option('-i, --ignorecomments', 'ignore comments in SLOC count')
-    .option('-r, --recurive', 'enable recursive directory walking')
+    .option('-r, --recursive', 'enable recursive directory walking')
     .option('-f, --filter [filters]', 'filter by file type (e.g. \'js,css\')', helpers.splitFilterList)
     .option('-v, --verbose', 'show verbose output')
     .parse(process.argv);
@@ -202,5 +202,5 @@ if(!helpers.dirExists(program.dir)) {
 /**
  * Finally select the appropriate action based on the -r option
 **/
-if(!program.recurive) walk.notrecursive(program.dir, processFiles);
+if(!program.recursive) walk.notrecursive(program.dir, processFiles);
 else walk.recursive(program.dir, processFiles);
