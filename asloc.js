@@ -53,7 +53,7 @@ var walk = {
   /**
    * Do a recursive walk
   **/
-  'recurive': function(dir, callback) {
+  'recursive': function(dir, callback) {
     var list = [];
     var files = fs.readdirSync(dir);
     files.forEach(function(file) {
