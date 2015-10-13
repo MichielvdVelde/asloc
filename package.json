@@ -1,6 +1,6 @@
 {
   "name": "asloc",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Simple CLI tool for counting Single Lines of Code (SLOC)",
   "main": "asloc.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/MichielvdVelde/asloc.git"
   },
+  "bin": "./asloc.js",
   "keywords": [
     "sloc",
     "lines",

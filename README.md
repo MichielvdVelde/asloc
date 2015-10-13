@@ -71,6 +71,8 @@ Total comment line count: 7
 
 ## Changelog
 
+* 0.0.5 - 13 Oct 2015
+  * Added `asloc.js` to the `bin` field in `package.json` (should now be executable)
 * V0.0.1 - v0.0.4 - 12 Oct. 2015
   * Display amount of comment lines
   * Significant code cleanup
