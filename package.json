@@ -10,7 +10,9 @@
     "type": "git",
     "url": "git+ssh://git@github.com/MichielvdVelde/asloc.git"
   },
-  "bin": "./asloc.js",
+  "bin": {
+    "asloc": "./bin/asloc.js"
+  },
   "keywords": [
     "sloc",
     "lines",
@@ -24,6 +26,9 @@
   },
   "homepage": "https://github.com/MichielvdVelde/asloc#readme",
   "dependencies": {
-    "commander": "^2.8.1"
+    "commander": "^2.8.1",
+    "parse-gitignore": "^0.2.0",
+    "recursive-readdir": "^1.3.0",
+    "sloc-count": "0.0.2"
   }
 }
